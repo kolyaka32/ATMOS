@@ -25,7 +25,7 @@ private:
     static constexpr float pressureKoef = 0.01;  // [1]
     static constexpr float heatCapacity = 1.0;   // [J/kg/K]
     static constexpr float drawTemperatureKoef = 2.5;
-    static constexpr float drawPressureKoef = 100.0;
+    static constexpr float drawPressureKoef = 1.0;
 
     float getMassFlow(const Gase& second, float power = 0.0) const;
 

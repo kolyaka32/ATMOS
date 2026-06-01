@@ -123,9 +123,9 @@ void Gase::exchangeValved(Gase& _outGase) {
 }
 
 void Gase::cool(Gase& _outGase, float _power) {
-    if (temperature > _power) {
-        float delta = temperature - _outGase.temperature - _power;
+    float delta = (temperature - _outGase.temperature - _power) * 0.5;
 
+    if (temperature > delta) {
         // Exchanging energy
         newEnergy -= delta * mass * heatCapacity;
         _outGase.newEnergy += delta * _outGase.mass * heatCapacity;
@@ -138,11 +138,14 @@ void Gase::applyChanges() {
 }
 
 void Gase::blitThermal(const Window& _window, SDL_FRect _rect) const {
-    if (temperature < 0) {
-        _window.setDrawColor({0, 0, 0, 255});
-    } else if (temperature < 255/drawTemperatureKoef) {
-        _window.setDrawColor({Uint8(temperature*drawTemperatureKoef), 0, 0, 255});
+    if (temperature < 300.0) {
+        // Cold spectre
+        _window.setDrawColor({0, 0, Uint8(255 - temperature*(255.0/300.0)), 255});
+    } else if (temperature < 300.0 + 255.0) {
+        // Warm spectre
+        _window.setDrawColor({Uint8(temperature-300.0), 0, 0, 255});
     } else {
+        // Over hotx
         _window.setDrawColor({255, 0, 0, 255});
     }
     _window.drawRect(_rect);
