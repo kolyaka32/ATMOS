@@ -36,8 +36,8 @@ class TargetConnect {
     void reset();
     bool click(const Mouse mouse);
     void unclick();
-    void press(SDL_Keycode key);
-    void write(const char* text);
+    bool press(SDL_Keycode key);
+    bool write(const char* text);
     void update();
     void blit() const;
 

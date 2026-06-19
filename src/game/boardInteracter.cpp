@@ -94,8 +94,9 @@ void BoardInteracter::unclick(const Mouse _mouse) {
     mousePress = 0;
 }
 
-void BoardInteracter::scroll(const Mouse _mouse, float _wheelY) {
+bool BoardInteracter::scroll(const Mouse _mouse, float _wheelY) {
     grid.zoom(_wheelY, _mouse);
+    return true;
 }
 
 bool BoardInteracter::press(SDL_Keycode _key) {

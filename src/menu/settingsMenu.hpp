@@ -22,9 +22,7 @@ class SettingsMenu : GUI::Template {
     // Title
     GUI::HighlightedStaticText titleText;
     // Flags for select language
-    #if (USE_SDL_IMAGE)
     const GUI::ImageButton flags[(unsigned)Language::Count];
-    #endif
     // Sliders for music (if need)
     #if (PRELOAD_MUSIC)
     GUI::HighlightedStaticText musicText;

@@ -30,21 +30,26 @@ void GameCycle::inputMouseUp() {
     settings.unClick();
 }
 
-void GameCycle::inputMouseWheel(float _wheelY) {
-    mouse.updatePos();
-    BaseCycle::inputMouseWheel(_wheelY);
-    board.scroll(mouse, _wheelY);
+bool GameCycle::inputMouseWheel(float _wheelY) {
+    if (BaseCycle::inputMouseWheel(_wheelY)) {
+        return true;
+    }
+    if (board.scroll(mouse, _wheelY)) {
+        return true;
+    }
+    return false;
 }
 
-void GameCycle::inputKeys(SDL_Keycode _key) {
-    if (board.press(_key)) {
-        return;
+bool GameCycle::inputKeys(SDL_Keycode _key) {
+    if (BaseCycle::inputKeys(_key)) {
+        return true;
     }
     if (_key == SDLK_ESCAPE) {
         // Closing top open object
         settings.activate();
-        return;
+        return true;
     }
+    return false;
 }
 
 void GameCycle::update() {

@@ -109,6 +109,7 @@ class Window {
     // Work with window
     void startTextInput() const;
     void stopTextInput() const;
+    void setTitle(const LanguagedText newTitles) const;
     void updateTitle() const;
 };
 

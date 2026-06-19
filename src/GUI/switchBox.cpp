@@ -11,17 +11,18 @@
 GUI::SwitchBox::SwitchBox(const Window& _window, float _X, float _Y, float _W,
     std::initializer_list<LanguagedText> _texts, unsigned _startOption, float _size, Color _backColor, Color _frontColor)
 : Template(_window),
-height(_size*1.2f),
+height(_size*1.2f / _window.getHeight()),
 backColor(_backColor) {
     // Setting background
-    background = {(_X-_W/2)*window.getWidth(), _Y*window.getHeight()-height/2, _W*window.getWidth(), height};
+    background = {(_X-_W/2)*window.getWidth(), (_Y - height/2)*window.getHeight(),
+        _W*window.getWidth(), height*window.getHeight()};
 
     // Placing select options
     int i=0;
     for (const LanguagedText* text=_texts.begin(); text != _texts.end(); ++text) {
         drawnTexts.emplace_back(_window, (_X-_W/2+0.022), _Y, std::move(*text), _size, _frontColor, GUI::Aligment::Left);
         // Placing text
-        drawnTexts[i].moveAbsolute(0.0, height*i);
+        drawnTexts[i].move(0.0, height*i);
         i++;
     }
     // Updating start option
@@ -54,15 +55,15 @@ void GUI::SwitchBox::set(unsigned _value) {
     if (opened) {
         selected = _value;
         opened = false;
-        drawnTexts[selected].moveAbsolute(0.0, -height*selected);
+        drawnTexts[selected].move(0.0, -height*selected);
         background.h = height;
     } else {
         // Resetting old option
-        drawnTexts[selected].moveAbsolute(0.0, height*selected);
+        drawnTexts[selected].move(0.0, height*selected);
 
         // Moving new option
         selected = _value;
-        drawnTexts[selected].moveAbsolute(0.0, -height*selected);
+        drawnTexts[selected].move(0.0, -height*selected);
     }
 }
 
@@ -78,12 +79,12 @@ bool GUI::SwitchBox::click(const Mouse _mouse) {
         if (_mouse.in(background)) {
             // Finding new option
             selected = (_mouse.getY() - background.y) / height;
-            drawnTexts[selected].moveAbsolute(0.0, -height*selected);
+            drawnTexts[selected].move(0.0, -height*selected);
             background.h = height;
             return true;
         }
         // Resetting to previous
-        drawnTexts[selected].moveAbsolute(0.0, -height*selected);
+        drawnTexts[selected].move(0.0, -height*selected);
         background.h = height;
         return false;
     } else {
@@ -92,7 +93,7 @@ bool GUI::SwitchBox::click(const Mouse _mouse) {
             opened = true;
             background.h = height * drawnTexts.size();
             // Resetting selected postion
-            drawnTexts[selected].moveAbsolute(0.0, height*selected);
+            drawnTexts[selected].move(0.0, height*selected);
         }
     }
     return false;

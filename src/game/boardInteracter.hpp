@@ -19,7 +19,7 @@ enum class ShowState {
 
 // Class for interact with and visualise board
 class BoardInteracter : GUI::Template {
-private:
+ private:
     static Board board;
     static ShowState showState;
     int mousePress;  // State for pressing mouse from SDL_MouseButtonFlags
@@ -41,7 +41,7 @@ private:
     GUI::SwitchBox buildSwitchBox;
     GUI::TextButton resetButton;
 
-public:
+ public:
     BoardInteracter(const Window& window, float boardX, float boardY, float panelW);
 
     void reset();
@@ -50,7 +50,7 @@ public:
     void click(const Mouse mouse);
     void update(const Mouse mouse);
     void unclick(const Mouse mouse);
-    void scroll(const Mouse mouse, float wheelY);
+    bool scroll(const Mouse mouse, float wheelY);
     bool press(SDL_Keycode key);
 
     void blit() const;

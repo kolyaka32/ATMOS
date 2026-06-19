@@ -7,7 +7,6 @@
 
 #include <string>
 #include <array>
-#include <initializer_list>
 #include "logger.hpp"
 #include "../languagesNames.hpp"
 

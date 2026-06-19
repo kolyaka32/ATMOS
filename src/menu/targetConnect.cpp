@@ -61,18 +61,22 @@ void TargetConnect::unclick() {
     portField.unclick();
 }
 
-void TargetConnect::press(SDL_Keycode _key) {
+bool TargetConnect::press(SDL_Keycode _key) {
     if (active) {
         IPField.type(_key);
         portField.type(_key);
+        return true;
     }
+    return false;
 }
 
-void TargetConnect::write(const char* _text) {
+bool TargetConnect::write(const char* _text) {
     if (active) {
         IPField.writeString(_text);
         portField.writeString(_text);
+        return true;
     }
+    return false;
 }
 
 void TargetConnect::update() {
@@ -156,7 +160,7 @@ void TargetConnect::blit() const {
 }
 
 void TargetConnect::writeBaseIP(const char* _text) {
-    SDL_snprintf(baseIP, sizeof(baseIP), "%s", _text);
+    snprintf(baseIP, sizeof(baseIP), "%s", _text);
 }
 
 const char* TargetConnect::getBaseIP() {
@@ -164,7 +168,7 @@ const char* TargetConnect::getBaseIP() {
 }
 
 void TargetConnect::writeBasePort(const char* _text) {
-    SDL_snprintf(basePort, sizeof(basePort), "%s", _text);
+    snprintf(basePort, sizeof(basePort), "%s", _text);
 }
 
 const char* TargetConnect::getBasePort() {
