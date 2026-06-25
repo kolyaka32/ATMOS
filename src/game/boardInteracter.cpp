@@ -44,7 +44,7 @@ void BoardInteracter::click(const Mouse _mouse) {
         // Update building menu
         if (buildSwitchBox.click(_mouse)) {
             // Selecting holding cell
-            switch (buildSwitchBox.getValue()) {
+            /*switch (buildSwitchBox.getValue()) {
             case 1:
                 holdingCell.state = Cell::Buldozer;
                 break;
@@ -71,7 +71,7 @@ void BoardInteracter::click(const Mouse _mouse) {
 
             default:
                 break;
-            }
+            }*/
         }
         // Check, if reset
         if (resetButton.in(_mouse)) {
@@ -102,7 +102,7 @@ bool BoardInteracter::scroll(const Mouse _mouse, float _wheelY) {
 bool BoardInteracter::press(SDL_Keycode _key) {
     if (_key == SDLK_R) {
         // Check, if try rotate part
-        holdingCell.rotate();
+        //holdingCell.rotate();
         return true;
     }
     if (_key == SDLK_ESCAPE) {
@@ -134,13 +134,12 @@ void BoardInteracter::update(const Mouse _mouse) {
     SDL_Point position = {int((_mouse.getX()-rect.x)/rect.w + 1), int((_mouse.getY()-rect.y)/rect.h + 1)};
 
     // Check, if in accessible area
-    if (position.x > 0 && position.x <= board.getWidth() &&
-        position.y > 0 && position.y <= board.getHeight()) {
+    if (board.in(position)) {
         // Check pressing on field
         switch (mousePress) {
         case SDL_BUTTON_LMASK:
             // Check, if try to do build
-            if (buildSwitchBox.getValue()) {
+            /*if (buildSwitchBox.getValue()) {
                 // Check, if demolish cell
                 if (holdingCell.state == Cell::Buldozer) {
                     board.resetCell(position);
@@ -148,8 +147,8 @@ void BoardInteracter::update(const Mouse _mouse) {
                     board.setCell(position, holdingCell);
                 }
             } else {
-                board.applyMass(position, 0.1);
-            }
+            }*/
+            board.applyMass(position, 0.1);
             break;
 
         case SDL_BUTTON_RMASK:

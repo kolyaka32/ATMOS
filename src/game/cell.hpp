@@ -1,94 +1,70 @@
 /*
- * Copyright (C) 2025-2026, Kazankov Nikolay
+ * Copyright (C) 2026, Kazankov Nikolay
  * <nik.kazankov.05@mail.ru>
  */
 
 #pragma once
 
-#include "gase.hpp"
+#include "../data/app.hpp"
 
 
-//
+// Class for interact with gase state and exchange
 class Cell {
- protected:
-    // Masks for state interaction
-    typedef Uint8 CellState;  // Type for storing cell state
-
-    // State defines as 1 bit for air throwput, 3 bits for type, 2 bits for rotation
-    // Avaliable gase state
-    static const CellState WALL_MASK = 0b1000000;  // Represent, is cell contains gase
-    static const CellState GASE = 0b0000000;
-    static const CellState WALL = 0b1000000;
-
-    // States
-    static const CellState TYPE_MASK = 0b0111000;  // Represent cell type
-
-    // Avaliable angles
-    static const CellState ROTATE_MASK = 0b0000100;  // Represent, if cell could be rotate
-    static const CellState ANGLE_MASK  = 0b0000011;  // Represent current rotation of cell
-    static const CellState UP    = 0b100;
-    static const CellState RIGHT = 0b101;
-    static const CellState DOWN  = 0b110;
-    static const CellState LEFT  = 0b111;
-
-    // Check state
-    bool isWall() const;  // Return, if air can't came throw
-    bool isRotable() const;  // Return, if part can be rotate
-
-    // Variables per cell
-    Gase gase;
-
- public:
-    // Possible states of cell
-    enum State : CellState {
-        // Hollow, air can came
-        Air         = GASE | 0b000 << 3,
-        Heater      = GASE | 0b001 << 3,
-
-        // Filled, air can't came throw
-        Wall        = WALL | 0b000 << 3,
-        // Vent object
-        VentUp      = WALL | 0b001 << 3 | UP,
-        VentRight   = WALL | 0b001 << 3 | RIGHT,
-        VentDown    = WALL | 0b001 << 3 | DOWN,
-        VentLeft    = WALL | 0b001 << 3 | LEFT,
-        // Check valve (allow flow to one side)
-        ValveUp     = WALL | 0b010 << 3 | UP,
-        ValveRight  = WALL | 0b010 << 3 | RIGHT,
-        ValveDown   = WALL | 0b010 << 3 | DOWN,
-        ValveLeft   = WALL | 0b010 << 3 | LEFT,
-        // Coolers (cool one side and heat another)
-        CoolerUp    = WALL | 0b011 << 3 | UP,
-        CoolerRight = WALL | 0b011 << 3 | RIGHT,
-        CoolerDown  = WALL | 0b011 << 3 | DOWN,
-        CoolerLeft  = WALL | 0b011 << 3 | LEFT,
-
-        // Special
-        Buldozer    = 0b11111111,
+ private:
+    // Parameters of one cell of gase
+    enum States {
+        None,
+        Solid,
+        Liquid,
+        Gase,
     };
+    Uint32 state;
+    // Required 3 from 4 paramters: mass, presure, temperature, volume
+    static constexpr float volume = 1.0;  // [m^3]
+    float mass;         // [kg]
+    float temperature;  // [K]
+    // Pressure as result
 
-    // Represent object (from State)
-    Uint8 state = Air;
+    // Constants
+    static constexpr float divisionKoef = 32.0;   // Koef, which part can go away
+    static constexpr float pressureKoef = 0.0001;  // [1]
+    static constexpr float diagonalKoef = pressureKoef * 1.1414/2;
+    static constexpr float heatCapacity = 1.0;    // [J/kg/K]
+    static constexpr float drawTemperatureKoef = 2.5;
+    static constexpr float drawPressureKoef = 1.0;
+
+    // Return mass, flowing from current to other cell, signed
+    float getMassFlow(const Cell& current, const Cell& other, float koef) const;
 
  public:
     Cell();
-    void reset();
-    void rotate();
+    void setGase(float pressure, float temperature);
+    void reset(const Cell environment);
+
+    // Getters
+    Uint32 getState() const;
+    float getPressure() const;
+    float getMass() const;
+    float getTemperature() const;
+    bool isPass() const;
+    bool isBlock() const;
 
     // Interactions
-    void applyMass(float koef);
-    void reduceMass(float koef);
+    void setState(Uint32 state);
+    void reduceMass(float koefMass);
+    void applyMass(float deltaMass, const Cell srcGase);
     void applyTemperature(float power);
-    float getPressure() const;
-    float getTemperature() const;
 
-    // Every cycle update
-    void exchange();  // Exchange with enviroment
-    void exchange(Cell& other);  // Interact between 2 cell
-    void vent(Cell& in, Cell& out) const;
-    void exchangeValved(Cell& in, Cell& out) const;
-    void cool(Cell& in, Cell& out) const;
-    void applyChanges();
+    // Every cycle updates
+    void calculateNew(const Cell upCells[3], const Cell midleCells[3],
+        const Cell downCells[3]);  // Calculate new cell value rely on surrounding
+    // Change between current and other
+    float exchange(const Cell& current, const Cell& other, float koef);
+
+    // Machine work - sholud migrate
+    //void vent(Cell& outGase, float power);  // Take air from current cell to outlet
+    //void exchangeValved(Cell& outGase);  // Allow flow only to one direction
+    //void cool(Cell& outGase, float power);  // Cool tile by heating up out tile
 
     // Drawing
     void blitNormal(const Window& window, SDL_FRect rect) const;

@@ -12,16 +12,19 @@
 class Board {
  private:
     // Lengthes of field (with side cells)
-    static const int height = 20;
-    static const int width  = 20;
+    static const int height = 1000;
+    static const int width  = 200;
     // Main array of cells
     Cell cells[height*width];
+    Cell newCells[height*width];
+    Cell enviroment;
 
  public:
     Board();
     void reset();
     int getWidth() const;
     int getHeight() const;
+    bool in(SDL_Point pos) const;
 
     // Interaction
     void setCell(SDL_Point pos, const Cell cell);
