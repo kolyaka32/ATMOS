@@ -41,7 +41,6 @@ class BoardInteracter : GUI::Template {
     GUI::HighlightedStaticText buildText;
     GUI::SwitchBox buildSwitchBox;
     GUI::TextButton resetButton;
-    GUI::DynamicText fpsCounter;
 
  public:
     BoardInteracter(const Window& window, float boardX, float boardY, float panelW);

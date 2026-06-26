@@ -8,10 +8,12 @@
 
 GameCycle::GameCycle(Window& _window)
 : BaseCycle(_window),
-board(_window, 0.26, 0.05, 0.25) {
+board(_window, 0.26, 0.05, 0.25),
+fpsCounter(_window, 0.01, 0.85) {
     if (!isRestarted()) {
         // Resetting field
         board.reset();
+        fpsCounter.reset();
     }
     logger.additional("Start game cycle");
 }
@@ -52,12 +54,24 @@ bool GameCycle::inputKeys(SDL_Keycode _key) {
     return false;
 }
 
+void GameCycle::preUpdate() {
+    fpsCounter.start();
+}
+
 void GameCycle::update() {
+    fpsCounter.setPoint1();
+
     BaseCycle::update();
 
     mouse.updatePos();
 
     board.update(mouse);
+
+    fpsCounter.setPoint2();
+}
+
+void GameCycle::postUpdate() {
+    fpsCounter.setPoint3();
 }
 
 void GameCycle::draw() const {
@@ -67,6 +81,7 @@ void GameCycle::draw() const {
 
     // Blitting field
     board.blit();
+    fpsCounter.blit();
 
     // Drawing upper dashboard
     exitButton.blit();

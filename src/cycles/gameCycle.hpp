@@ -7,6 +7,7 @@
 
 #include "baseCycle.hpp"
 #include "../game/boardInteracter.hpp"
+#include "../game/fpsCounter.hpp"
 
 
 // Cycle with game
@@ -14,6 +15,7 @@ class GameCycle : public BaseCycle {
  protected:
     // Active game part
     BoardInteracter board;
+    FPScounter fpsCounter;
 
     // New overrided cycle functions
     bool inputMouseDown() override;
@@ -21,6 +23,8 @@ class GameCycle : public BaseCycle {
     bool inputMouseWheel(float wheelY) override;
     bool inputKeys(SDL_Keycode key) override;
     void update() override;
+    void preUpdate() override;
+    void postUpdate() override;
     void draw() const override;
 
  public:

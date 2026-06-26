@@ -78,7 +78,11 @@ void CycleTemplate::getInput() {
 // Empty template for draw
 void CycleTemplate::draw() const {}
 
+void CycleTemplate::preUpdate() {}
+
 void CycleTemplate::update() {}
+
+void CycleTemplate::postUpdate() {}
 
 bool CycleTemplate::inputMouseDown() {
     return false;
@@ -117,6 +121,9 @@ void CycleTemplate::run() {
 
     // Starting main cycle
     while (running) {
+        // Pre-update
+        preUpdate();
+
         // Getting user input
         getInput();
 
@@ -126,7 +133,10 @@ void CycleTemplate::run() {
         // Drawing interface
         draw();
 
+        // Post-update
+        postUpdate();
+
         // Standing in idle state
-        //idleTimer.sleep();
+        idleTimer.sleep();
     }
 }

@@ -24,8 +24,10 @@ class CycleTemplate {
 
     // Cycle functions for cycle (should be overriden)
     void getInput();            // Getting all user input
+    virtual void preUpdate();   // Function before inputting
     virtual void update();      // Getting special objects update
     virtual void draw() const;  // Draw all need objects
+    virtual void postUpdate();  // Function after draw
 
     // Subprograms for get need input
     virtual bool inputMouseDown();                // Actioning for mouse button pressing
