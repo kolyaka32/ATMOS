@@ -81,17 +81,18 @@ void Cell::applyMass(float _deltaMass, const Cell _srcGase) {
 
 void Cell::calculateNew(const Cell _upCells[3], const Cell _midleCells[3],
     const Cell _downCells[3]) {
-    const Cell* src = _midleCells + 1;
-    if (src->isPass()) {
-        float energy = mass * temperature * heatCapacity;
-        energy += exchange(*src, _upCells[0],    diagonalKoef);
-        energy += exchange(*src, _upCells[1],    pressureKoef);
-        energy += exchange(*src, _upCells[2],    diagonalKoef);
-        energy += exchange(*src, _midleCells[0], pressureKoef);
-        energy += exchange(*src, _midleCells[2], pressureKoef);
-        energy += exchange(*src, _downCells[0],  diagonalKoef);
-        energy += exchange(*src, _downCells[1],  pressureKoef);
-        energy += exchange(*src, _downCells[2],  diagonalKoef);
+    const Cell& src = _midleCells[1];
+    if (src.isPass()) {
+        mass = src.mass;
+        float energy = mass * src.temperature * src.heatCapacity;
+        energy += exchange(src, _upCells[0],    diagonalKoef);
+        energy += exchange(src, _upCells[1],    pressureKoef);
+        energy += exchange(src, _upCells[2],    diagonalKoef);
+        energy += exchange(src, _midleCells[0], pressureKoef);
+        energy += exchange(src, _midleCells[2], pressureKoef);
+        energy += exchange(src, _downCells[0],  diagonalKoef);
+        energy += exchange(src, _downCells[1],  pressureKoef);
+        energy += exchange(src, _downCells[2],  diagonalKoef);
         temperature = energy / mass / heatCapacity;
     }
 }

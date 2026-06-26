@@ -16,6 +16,9 @@ void Board::reset() {
         cells[i].reset(enviroment);
         newCells[i].reset(enviroment);
     }
+    switched = false;
+    currentField = cells;
+    calculatingField = newCells;
 }
 
 int Board::getWidth() const {
@@ -32,31 +35,31 @@ bool Board::in(SDL_Point _pos) const {
 }
 
 float Board::getPressure(SDL_Point _pos) const {
-    return cells[_pos.y*width+_pos.x].getPressure();
+    return currentField[_pos.y*width+_pos.x].getPressure();
 }
 
 float Board::getTemperature(SDL_Point _pos) const {
-    return cells[_pos.y*width+_pos.x].getTemperature();
+    return currentField[_pos.y*width+_pos.x].getTemperature();
 }
 
 void Board::setCell(SDL_Point _pos, const Cell _cell) {
-    newCells[_pos.y*width+_pos.x] = _cell;
+    calculatingField[_pos.y*width+_pos.x] = _cell;
 }
 
 void Board::resetCell(SDL_Point _pos) {
-    newCells[_pos.y*width+_pos.x].reset(enviroment);
+    calculatingField[_pos.y*width+_pos.x].reset(enviroment);
 }
 
 void Board::applyMass(SDL_Point _pos, float _deltaMass) {
-    newCells[_pos.y*width+_pos.x].applyMass(_deltaMass, enviroment);
+    calculatingField[_pos.y*width+_pos.x].applyMass(_deltaMass, enviroment);
 }
 
 void Board::reduceMass(SDL_Point _pos, float _deltaMass) {
-    newCells[_pos.y*width+_pos.x].reduceMass(_deltaMass);
+    calculatingField[_pos.y*width+_pos.x].reduceMass(_deltaMass);
 }
 
 void Board::applyTemperature(SDL_Point _pos, float _temperature) {
-    newCells[_pos.y*width+_pos.x].applyTemperature(_temperature);
+    calculatingField[_pos.y*width+_pos.x].applyTemperature(_temperature);
 }
 
 void Board::update() {
@@ -64,21 +67,30 @@ void Board::update() {
         for (int x=1; x < width-1; ++x) {
             // Exchanging with surrounding cells
             // ! should be optimised to multithreading
-            newCells[y*width+x].calculateNew(cells+(y-1)*width+x-1,
-                cells+y*width+x-1, cells+(y+1)*width+x-1);
+            calculatingField[y*width+x].calculateNew(currentField+(y-1)*width+x-1,
+                currentField+y*width+x-1, currentField+(y+1)*width+x-1);
         }
     }
 }
 
 void Board::applyChanges() {
-    // Copying saved array to main
-    memcpy(cells, newCells, sizeof(cells));
+    // Swapping pointers to arrays
+    if (switched) {
+        currentField = cells;
+        calculatingField = newCells;
+        switched = false;
+    } else {
+        currentField = newCells;
+        calculatingField = cells;
+        switched = true;
+    }
+    //memcpy(currentField, calculatingField, sizeof(cells));
 }
 
 void Board::blitNormal(const Window& _window, SDL_FRect _cellRect) const {
     for (int y=1; y < height-1; ++y) {
         for (int x=1; x < width-1; ++x) {
-            cells[y*width+x].blitNormal(_window, _cellRect);
+            currentField[y*width+x].blitNormal(_window, _cellRect);
             _cellRect.x += _cellRect.w;
         }
         _cellRect.x -= _cellRect.w * (width-2);
@@ -89,7 +101,7 @@ void Board::blitNormal(const Window& _window, SDL_FRect _cellRect) const {
 void Board::blitThermal(const Window& _window, SDL_FRect _cellRect) const {
     for (int y=1; y < height-1; ++y) {
         for (int x=1; x < width-1; ++x) {
-            cells[y*width+x].blitThermal(_window, _cellRect);
+            currentField[y*width+x].blitThermal(_window, _cellRect);
             _cellRect.x += _cellRect.w;
         }
         _cellRect.x -= _cellRect.w * (width-2);
@@ -100,7 +112,7 @@ void Board::blitThermal(const Window& _window, SDL_FRect _cellRect) const {
 void Board::blitPressure(const Window& _window, SDL_FRect _cellRect) const {
     for (int y=1; y < height-1; ++y) {
         for (int x=1; x < width-1; ++x) {
-            cells[y*width+x].blitPressure(_window, _cellRect);
+            currentField[y*width+x].blitPressure(_window, _cellRect);
             _cellRect.x += _cellRect.w;
         }
         _cellRect.x -= _cellRect.w * (width-2);

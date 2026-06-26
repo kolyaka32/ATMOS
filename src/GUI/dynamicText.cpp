@@ -20,7 +20,7 @@ height(_height) {
     texture = window.createTexture(Fonts::Main, height, texts.getString().c_str(), 0, color);
 
     // Moving draw rect to new place
-    rect.w = texture->w;
+        rect.w = texture->w;
     rect.h = texture->h;
     rect.x = SDL_roundf(window.getWidth() * _X - (rect.w * (unsigned)_aligment / 2));
     rect.y = SDL_roundf(window.getHeight() * _Y - rect.h / 2);

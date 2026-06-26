@@ -12,12 +12,16 @@
 class Board {
  private:
     // Lengthes of field (with side cells)
-    static const int height = 1000;
-    static const int width  = 200;
+    static const int height = 400;
+    static const int width  = 400;
     // Main array of cells
     Cell cells[height*width];
     Cell newCells[height*width];
+    // Variables
     Cell enviroment;
+    bool switched;
+    Cell* currentField;  // Field, that currently using as data source
+    Cell* calculatingField;    // Filed, that currently updating, swap with current after
 
  public:
     Board();

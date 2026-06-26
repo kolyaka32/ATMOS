@@ -23,6 +23,7 @@ class BoardInteracter : GUI::Template {
     static Board board;
     static ShowState showState;
     int mousePress;  // State for pressing mouse from SDL_MouseButtonFlags
+    Uint64 prevCounter;
 
     // Rects of local positions of board
     const SDL_FRect cellRect;
@@ -40,6 +41,7 @@ class BoardInteracter : GUI::Template {
     GUI::HighlightedStaticText buildText;
     GUI::SwitchBox buildSwitchBox;
     GUI::TextButton resetButton;
+    GUI::DynamicText fpsCounter;
 
  public:
     BoardInteracter(const Window& window, float boardX, float boardY, float panelW);

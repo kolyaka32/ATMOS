@@ -127,6 +127,6 @@ void CycleTemplate::run() {
         draw();
 
         // Standing in idle state
-        idleTimer.sleep();
+        //idleTimer.sleep();
     }
 }

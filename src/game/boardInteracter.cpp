@@ -25,13 +25,15 @@ buildText(_window, _panelW/2, 0.5, {"Build object:", "Объект постро�
 buildSwitchBox(_window, _panelW/2, 0.535, 0.2, {{"Not selected", "Не выбран"},
     {"Demplish", "Снести"}, {"Wall", "Стена"}, {"Vent", "Вентилятор"}, {"Heater", "Нагреватель"},
     {"Check valve", "Обратный клапан"}, {"Cooler", "Холодильник"}}),
-resetButton(_window, _panelW/2, 0.8, {"Reset", "Сброс"}) {}
+resetButton(_window, _panelW/2, 0.8, {"Reset", "Сброс"}),
+fpsCounter(_window, _panelW/4, 0.9, {"FPS: %llu", "FPS: %llu"}, Height::Main, BLACK, GUI::Aligment::Left) {}
 
 void BoardInteracter::reset() {
     board.reset();
     mousePress = 0;
     pickedPressure.setValues(0.0f);
     pickedTemperature.setValues(0.0f);
+    fpsCounter.setValues(Uint64(0));
 }
 
 void BoardInteracter::click(const Mouse _mouse) {
@@ -118,6 +120,9 @@ bool BoardInteracter::press(SDL_Keycode _key) {
 void BoardInteracter::update(const Mouse _mouse) {
     // Updating physic
     board.update();
+
+    fpsCounter.setValues(SDL_GetPerformanceCounter() - prevCounter);
+    prevCounter = SDL_GetPerformanceCounter();
 
     // Check, if building
     if (buildSwitchBox.getValue() != 0) {
@@ -208,6 +213,7 @@ void BoardInteracter::blit() const {
     buildText.blit();
     buildSwitchBox.blit();
     resetButton.blit();
+    fpsCounter.blit();
 
     // Building
     if (buildSwitchBox.getValue() != 0) {
