@@ -147,7 +147,7 @@ void SettingsMenu::blit() const {
         titleText.blit();
 
         // Blitting language buttons
-        for (unsigned i = 0; i < 4; ++i) {
+        for (unsigned i = 0; i < 2; ++i) {
             flags[i].blit();
         }
         // Music slider

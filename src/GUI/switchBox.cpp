@@ -29,11 +29,11 @@ backColor(_backColor) {
     selected = _startOption;
 
     // Creating arrow
-    arrowRect = {background.x+height*0.1f, background.y+height*0.15f, height*0.7f, height*0.7f};
+    arrowRect = {background.x+_size*0.15f, background.y+_size*0.2f, _size*0.84f, _size*0.84f};
     arrowTexture = window.createTexture(arrowRect.w, arrowRect.h);
     SDL_Vertex vertex[3] = {
         {  // Down point
-            {_X+arrowRect.w*0.5f, _Y+arrowRect.h},
+            {_X+arrowRect.w*0.5f, _Y+arrowRect.h-1.0f},
             {0.0, 0.0, 0.0, 1.0},  // Black
         },
         {  // Left point
@@ -41,7 +41,7 @@ backColor(_backColor) {
             {0.0, 0.0, 0.0, 1.0},  // Black
         },
         {  // Right point
-            {_X+arrowRect.w, _Y},
+            {_X+arrowRect.w-1.0f, _Y},
             {0.0, 0.0, 0.0, 1.0},  // Black
         },
     };

@@ -179,6 +179,7 @@ void BoardInteracter::update(const Mouse _mouse) {
 void BoardInteracter::blit() const {
     // Get rect of first cell
     const SDL_FRect rect = grid.absolute(cellRect);
+    //const SDL_Rect position = grid;
 
     // Draw board
     switch (showState) {
